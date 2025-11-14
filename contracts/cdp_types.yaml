@@ -1,0 +1,21 @@
+# Contract: cdp_types
+# Type: base
+# Version: 0.1.0
+
+component:
+  name: cdp_types
+  version: "0.1.0"
+  type: base
+
+dependencies:
+  []
+
+api:
+  # Public API will be defined during implementation
+  # based on devtools-component-specification.md
+  exports: []
+
+integration_points:
+  # Integration with browser components
+  # Will be specified during implementation
+  bridges: []

@@ -1,0 +1,12 @@
+[package]
+name = "devtools_api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+devtools_component = { path = "../devtools_component" }
+tokio = { version = "1.35", features = ["full"] }
+anyhow = "1.0"
+
+[dev-dependencies]
+tokio-test = "0.4"

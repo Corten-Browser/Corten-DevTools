@@ -1,0 +1,29 @@
+# Contract: devtools_component
+# Type: integration
+# Version: 0.1.0
+
+component:
+  name: devtools_component
+  version: "0.1.0"
+  type: integration
+
+dependencies:
+  - cdp_types
+  - cdp_server
+  - protocol_handler
+  - dom_domain
+  - network_domain
+  - runtime_debugger
+  - profiler_domains
+  - console_storage
+  - browser_page_domains
+
+api:
+  # Public API will be defined during implementation
+  # based on devtools-component-specification.md
+  exports: []
+
+integration_points:
+  # Integration with browser components
+  # Will be specified during implementation
+  bridges: []

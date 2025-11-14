@@ -35,3 +35,23 @@ orchestration/.idea/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Rust
+**/target/
+**/*.rs.bk
+**/.cargo-lock
+
+# Rust workspace
+/Cargo.lock
+
+# Test coverage
+**/*.profraw
+**/*.profdata
+**/tarpaulin-report.html
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

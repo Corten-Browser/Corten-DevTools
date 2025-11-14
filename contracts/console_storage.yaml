@@ -1,0 +1,22 @@
+# Contract: console_storage
+# Type: feature
+# Version: 0.1.0
+
+component:
+  name: console_storage
+  version: "0.1.0"
+  type: feature
+
+dependencies:
+  - cdp_types
+  - protocol_handler
+
+api:
+  # Public API will be defined during implementation
+  # based on devtools-component-specification.md
+  exports: []
+
+integration_points:
+  # Integration with browser components
+  # Will be specified during implementation
+  bridges: []

@@ -1,0 +1,21 @@
+# Contract: protocol_handler
+# Type: core
+# Version: 0.1.0
+
+component:
+  name: protocol_handler
+  version: "0.1.0"
+  type: core
+
+dependencies:
+  - cdp_types
+
+api:
+  # Public API will be defined during implementation
+  # based on devtools-component-specification.md
+  exports: []
+
+integration_points:
+  # Integration with browser components
+  # Will be specified during implementation
+  bridges: []
