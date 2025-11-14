@@ -1,0 +1,21 @@
+# Contract: devtools_api
+# Type: application
+# Version: 0.1.0
+
+component:
+  name: devtools_api
+  version: "0.1.0"
+  type: application
+
+dependencies:
+  - devtools_component
+
+api:
+  # Public API will be defined during implementation
+  # based on devtools-component-specification.md
+  exports: []
+
+integration_points:
+  # Integration with browser components
+  # Will be specified during implementation
+  bridges: []

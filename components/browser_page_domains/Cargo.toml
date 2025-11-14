@@ -1,0 +1,17 @@
+[package]
+name = "browser_page_domains"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+async-trait = "0.1"
+cdp_types = { version = "0.1.0", path = "../cdp_types" }
+parking_lot = "0.12"
+protocol_handler = { version = "0.1.0", path = "../protocol_handler" }
+serde_json = "1.0"
+tokio = { version = "1.35", features = ["full"] }
+# Dependencies will be added during implementation
+
+[dev-dependencies]
+tokio-test = "0.4"
+# Test dependencies will be added during implementation

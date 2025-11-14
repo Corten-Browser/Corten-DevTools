@@ -1,0 +1,40 @@
+[workspace]
+members = [
+    "components/cdp_types",
+    "components/cdp_server",
+    "components/protocol_handler",
+    "components/dom_domain",
+    "components/network_domain",
+    "components/runtime_debugger",
+    "components/profiler_domains",
+    "components/console_storage",
+    "components/browser_page_domains",
+    "components/devtools_component",
+    "components/devtools_api",
+]
+
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["CortenBrowser Team"]
+license = "MIT OR Apache-2.0"
+
+[package]
+name = "corten-devtools"
+version = "0.1.0"
+edition = "2021"
+authors = ["CortenBrowser Team"]
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+devtools_api = { path = "components/devtools_api" }
+
+[dev-dependencies]
+tokio = { version = "1.35", features = ["full", "test-util"] }
+tokio-test = "0.4"
+
+[[test]]
+name = "integration_e2e"
+path = "tests/integration_e2e.rs"
