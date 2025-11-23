@@ -1,9 +1,11 @@
 {
+  "tasks": [],
+  "completed_order": [],
+  "last_updated": "2025-11-23T23:28:00.681196",
+  "initialized": true,
   "spec_file": "specifications/devtools-component-specification.md",
-  "queue_initialized": true,
-  "last_sync": "2025-11-23T23:28:00.681875",
-  "task_count": 0,
   "spec_files": [
     "specifications/devtools-component-specification.md"
-  ]
+  ],
+  "total_features": 0
 }
