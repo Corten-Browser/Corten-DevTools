@@ -1,11 +1,1481 @@
 {
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "FEAT-001",
+      "name": "CDP WebSocket Server",
+      "description": "Implement WebSocket server for Chrome DevTools Protocol. Handles bidirectional communication with DevTools frontend on port 9222.",
+      "phase": 1,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "networking-websocket",
+      "template_name": "WebSocket Protocol Implementation",
+      "difficulty": "medium",
+      "estimated_loc": "4000-7000",
+      "recommended_libraries": [
+        {
+          "name": "tokio-tungstenite",
+          "version": "0.21",
+          "required": true,
+          "purpose": "Async WebSocket implementation",
+          "registry_url": "https://crates.io/crates/tokio-tungstenite"
+        },
+        {
+          "name": "tungstenite",
+          "version": "0.21",
+          "required": true,
+          "purpose": "WebSocket protocol implementation",
+          "registry_url": "https://crates.io/crates/tungstenite"
+        }
+      ],
+      "acceptance_criteria": [
+        "Successful WebSocket handshake (HTTP Upgrade)",
+        "Send/receive text and binary frames",
+        "Handle ping/pong frames automatically",
+        "Support frame fragmentation",
+        "Clean connection close with status codes",
+        "Performance: 10,000 messages/sec on localhost"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Frame parsing", "Message fragmentation/defragmentation", "Masking operations"],
+        "integration_tests": ["Full handshake with test server", "Bidirectional communication"],
+        "public_test_suites": [{"name": "Autobahn Testsuite", "url": "https://github.com/crossbario/autobahn-testsuite", "target_pass_rate": 95}]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "WebSocket Server Implementation",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-002",
+      "name": "CDP Protocol Handler",
+      "description": "Implement message routing and handling for Chrome DevTools Protocol. Parse incoming CDP messages and route to appropriate domain handlers.",
+      "phase": 1,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "2000-3000",
+      "recommended_libraries": [
+        {
+          "name": "serde_json",
+          "version": "1.0",
+          "required": true,
+          "purpose": "JSON parsing for CDP messages",
+          "registry_url": "https://crates.io/crates/serde_json"
+        }
+      ],
+      "acceptance_criteria": [
+        "Parse CDP messages with id, method, params",
+        "Route messages to correct domain handler",
+        "Return properly formatted CDP responses",
+        "Handle method not found errors",
+        "Handle invalid params errors"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Message parsing", "Error response generation", "Method routing"],
+        "integration_tests": ["Full request/response cycle"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "WebSocket Server Implementation",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-003",
+      "name": "Session Management",
+      "description": "Manage DevTools client sessions. Track connected clients, session state, and handle connection lifecycle.",
+      "phase": 1,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "1500-2500",
+      "recommended_libraries": [
+        {
+          "name": "dashmap",
+          "version": "5.5",
+          "required": true,
+          "purpose": "Concurrent HashMap for sessions",
+          "registry_url": "https://crates.io/crates/dashmap"
+        },
+        {
+          "name": "uuid",
+          "version": "1.6",
+          "required": true,
+          "purpose": "Session ID generation",
+          "registry_url": "https://crates.io/crates/uuid"
+        }
+      ],
+      "acceptance_criteria": [
+        "Create unique session for each connection",
+        "Track session state across messages",
+        "Clean up on session disconnect",
+        "Support multiple concurrent sessions"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Session creation", "Session lookup", "Session cleanup"],
+        "integration_tests": ["Multiple concurrent connections"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Architecture",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-004",
+      "name": "Browser Domain",
+      "description": "Implement CDP Browser domain. Provides browser version info, command line arguments, and crash dumps.",
+      "phase": 1,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "easy",
+      "estimated_loc": "500-1000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Return browser version information",
+        "Return protocol version (1.3)",
+        "Return user agent string",
+        "Return browser command line arguments"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Version info generation", "Command line parsing"],
+        "integration_tests": ["CDP Browser.getVersion call"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Core Domains Implementation - Browser Domain",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-005",
+      "name": "DOM Domain",
+      "description": "Implement CDP DOM domain. Provides DOM tree inspection, node manipulation, and query selector support.",
+      "phase": 1,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "dom-dom-tree",
+      "template_name": "DOM Tree Data Structure",
+      "difficulty": "hard",
+      "estimated_loc": "8000-12000",
+      "recommended_libraries": [
+        {
+          "name": "html5ever",
+          "version": "0.26",
+          "required": true,
+          "purpose": "HTML parsing to DOM",
+          "registry_url": "https://crates.io/crates/html5ever"
+        },
+        {
+          "name": "servo-arc",
+          "version": "0.3",
+          "required": true,
+          "purpose": "Shared ownership for nodes",
+          "registry_url": "https://crates.io/crates/servo-arc"
+        }
+      ],
+      "acceptance_criteria": [
+        "Return document root node",
+        "Query selector support",
+        "Set/get attribute values",
+        "DOM mutation events",
+        "Performance: Serialize 10,000 nodes in < 100ms"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Node registration", "Query selector", "Attribute manipulation"],
+        "integration_tests": ["Full DOM tree traversal", "Live DOM updates"],
+        "public_test_suites": [{"name": "DOM WPT Tests", "url": "https://github.com/web-platform-tests/wpt/tree/master/dom", "target_pass_rate": 85}]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Core Domains Implementation - DOM Domain",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-006",
+      "name": "CSS Domain",
+      "description": "Implement CDP CSS domain. Provides stylesheet inspection, computed styles, and live CSS editing.",
+      "phase": 1,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "devtools-inspector",
+      "template_name": "DOM and CSS Inspector",
+      "difficulty": "hard",
+      "estimated_loc": "6000-8000",
+      "recommended_libraries": [
+        {
+          "name": "serde_json",
+          "version": "1.0",
+          "required": true,
+          "purpose": "Serialize inspector data for protocol",
+          "registry_url": "https://crates.io/crates/serde_json"
+        }
+      ],
+      "acceptance_criteria": [
+        "Get computed styles for element",
+        "Get matched CSS rules",
+        "Modify stylesheets live",
+        "Display matched rules with specificity"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Computed style calculation", "Rule matching"],
+        "integration_tests": ["Live CSS editing", "Style recalculation"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - protocol/domains/css.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-007",
+      "name": "Network Domain",
+      "description": "Implement CDP Network domain. Monitor HTTP requests/responses, enable request interception, and cache inspection.",
+      "phase": 2,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "networking-http-client",
+      "template_name": "HTTP Protocol Client",
+      "difficulty": "hard",
+      "estimated_loc": "5000-8000",
+      "recommended_libraries": [
+        {
+          "name": "hyper",
+          "version": "1.0",
+          "required": true,
+          "purpose": "HTTP protocol handling",
+          "registry_url": "https://crates.io/crates/hyper"
+        }
+      ],
+      "acceptance_criteria": [
+        "Track all network requests",
+        "Capture request/response headers and bodies",
+        "Request interception support",
+        "WebSocket frame inspection",
+        "Cache inspection"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Request tracking", "Response body capture"],
+        "integration_tests": ["Full network monitoring", "Request interception"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Core Domains Implementation - Network Domain",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-008",
+      "name": "Runtime Domain",
+      "description": "Implement CDP Runtime domain. JavaScript expression evaluation, remote object inspection, and console integration.",
+      "phase": 2,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "javascript-js-runtime-integration",
+      "template_name": "JavaScript Runtime Integration",
+      "difficulty": "expert",
+      "estimated_loc": "8000-12000",
+      "recommended_libraries": [
+        {
+          "name": "v8",
+          "version": "0.84",
+          "required": true,
+          "purpose": "V8 JavaScript engine integration",
+          "registry_url": "https://crates.io/crates/v8"
+        }
+      ],
+      "acceptance_criteria": [
+        "Evaluate JavaScript expressions",
+        "Return remote object references",
+        "Call functions on remote objects",
+        "Support async/await evaluation"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Expression evaluation", "Remote object creation"],
+        "integration_tests": ["Full REPL session"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Core Domains Implementation - Runtime Domain",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-009",
+      "name": "Debugger Domain",
+      "description": "Implement CDP Debugger domain. Breakpoint management, stepping, call stack inspection, and scope evaluation.",
+      "phase": 3,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "devtools-debugger",
+      "template_name": "JavaScript Debugger",
+      "difficulty": "expert",
+      "estimated_loc": "12000-20000",
+      "recommended_libraries": [
+        {
+          "name": "v8",
+          "version": "0.84",
+          "required": true,
+          "purpose": "V8 debugging API access",
+          "registry_url": "https://crates.io/crates/v8"
+        },
+        {
+          "name": "deno_core",
+          "version": "0.248",
+          "required": false,
+          "purpose": "Inspector protocol integration",
+          "registry_url": "https://crates.io/crates/deno_core"
+        }
+      ],
+      "acceptance_criteria": [
+        "Set and remove breakpoints at source locations",
+        "Pause execution on breakpoints",
+        "Step over/into/out of function calls",
+        "View call stack with local variables",
+        "Evaluate expressions in paused context",
+        "Support source maps",
+        "Performance: Breakpoint hit overhead < 10ms"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Breakpoint management", "Step execution", "Call stack inspection"],
+        "integration_tests": ["Full debugging session", "Source map resolution"],
+        "public_test_suites": [{"name": "Chrome DevTools Protocol Tests", "url": "https://github.com/ChromeDevTools/devtools-protocol", "target_pass_rate": 80}]
+      },
+      "implementation_hints": [
+        "Implement Chrome DevTools Protocol (CDP) for compatibility",
+        "Use V8 debugging API for breakpoints and stepping",
+        "Maintain mapping from source locations to bytecode offsets",
+        "Support conditional breakpoints"
+      ],
+      "common_pitfalls": [
+        {"issue": "Breakpoints not hit", "solution": "Verify source location mapping, check line numbers"},
+        {"issue": "Step into skipping internal functions", "solution": "Implement blackboxing for library code"},
+        {"issue": "Expression evaluation in wrong scope", "solution": "Ensure evaluation uses correct call frame context"}
+      ],
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "JavaScript Debugger",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-010",
+      "name": "Console Domain",
+      "description": "Implement CDP Console domain. Console message handling, log levels, and message formatting.",
+      "phase": 2,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "2000-4000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Capture console.log/warn/error messages",
+        "Format objects for display",
+        "Support log filtering",
+        "Clear console messages"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Message capture", "Object formatting"],
+        "integration_tests": ["Console output display"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - protocol/domains/console.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-011",
+      "name": "Profiler Domain",
+      "description": "Implement CDP Profiler domain. CPU profiling, code coverage analysis.",
+      "phase": 4,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "hard",
+      "estimated_loc": "5000-8000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Start/stop CPU profiling",
+        "Record call tree with timing",
+        "Code coverage collection",
+        "Export profiles in compatible format"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Profile data collection", "Coverage tracking"],
+        "integration_tests": ["Full profiling session"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - protocol/domains/profiler.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-012",
+      "name": "HeapProfiler Domain",
+      "description": "Implement CDP HeapProfiler domain. Memory profiling, heap snapshots, and allocation tracking.",
+      "phase": 4,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "hard",
+      "estimated_loc": "5000-8000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Take heap snapshots",
+        "Track object allocation",
+        "Export snapshot in Chrome format",
+        "Detect memory leaks"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Snapshot creation", "Allocation tracking"],
+        "integration_tests": ["Full heap analysis session"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - protocol/domains/heap_profiler.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-013",
+      "name": "Security Domain",
+      "description": "Implement CDP Security domain. Certificate inspection, security state, and CSP violation reporting.",
+      "phase": 5,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "3000-5000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Report page security state",
+        "Certificate chain inspection",
+        "Mixed content detection",
+        "CSP violation tracking"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Security state calculation", "Certificate parsing"],
+        "integration_tests": ["Security panel display"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - protocol/domains/security.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-014",
+      "name": "Storage Domain",
+      "description": "Implement CDP Storage domain. Cookies, LocalStorage, SessionStorage, and IndexedDB inspection.",
+      "phase": 5,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "4000-6000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "List and modify cookies",
+        "LocalStorage inspection",
+        "SessionStorage inspection",
+        "IndexedDB database browsing"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Cookie parsing", "Storage enumeration"],
+        "integration_tests": ["Storage panel functionality"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - protocol/domains/storage.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-015",
+      "name": "Emulation Domain",
+      "description": "Implement CDP Emulation domain. Device emulation, viewport sizing, and media type override.",
+      "phase": 5,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "3000-5000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Set device metrics (viewport size, pixel ratio)",
+        "Touch emulation",
+        "Media type override",
+        "Geolocation override"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Metrics calculation", "Override application"],
+        "integration_tests": ["Device emulation mode"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - protocol/domains/emulation.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-016",
+      "name": "Page Domain",
+      "description": "Implement CDP Page domain. Page navigation, lifecycle events, and screenshot capture.",
+      "phase": 1,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "3000-5000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Page navigation control",
+        "Page lifecycle events (load, DOMContentLoaded)",
+        "Screenshot capture",
+        "Frame management"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Navigation handling", "Event emission"],
+        "integration_tests": ["Page load tracking"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - protocol/domains/page.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-017",
+      "name": "DOM Inspector Bridge",
+      "description": "Bridge between DevTools and DOM component. Set up mutation observers and convert DOM events to CDP events.",
+      "phase": 1,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "2000-3000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Observe DOM mutations",
+        "Convert mutations to CDP events",
+        "Handle node insertion/removal",
+        "Track attribute changes"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Mutation observation", "Event conversion"],
+        "integration_tests": ["Live DOM updates in DevTools"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Component Integration Bridges - DOM Bridge",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-018",
+      "name": "Network Inspector Bridge",
+      "description": "Bridge between DevTools and Network stack. Track requests, responses, and timing information.",
+      "phase": 2,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "2500-4000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Track request lifecycle",
+        "Capture request/response data",
+        "Timing information collection",
+        "Emit CDP network events"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Request tracking", "Event emission"],
+        "integration_tests": ["Network panel integration"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Component Integration Bridges - Network Bridge",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-019",
+      "name": "JavaScript Debug Bridge",
+      "description": "Bridge between DevTools and JavaScript runtime. Handle breakpoints, stepping, and evaluation.",
+      "phase": 3,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "hard",
+      "estimated_loc": "3000-5000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Set breakpoints in V8",
+        "Handle pause events",
+        "Evaluate in paused context",
+        "Manage debug sessions"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Breakpoint setting", "Event handling"],
+        "integration_tests": ["Full debug session"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Component Integration Bridges",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-020",
+      "name": "Render Inspector Bridge",
+      "description": "Bridge between DevTools and Render engine. Provide layout information and visual inspection.",
+      "phase": 1,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "2000-3000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Get box model for elements",
+        "Paint highlighting",
+        "Layout tree inspection",
+        "Performance metrics"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Box model calculation", "Highlight rendering"],
+        "integration_tests": ["Elements panel box model"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Component Integration Bridges",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-021",
+      "name": "Storage Bridge",
+      "description": "Bridge between DevTools and Storage system. Access cookies, localStorage, IndexedDB.",
+      "phase": 5,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "2000-3000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Enumerate storage entries",
+        "Read/write storage values",
+        "Delete storage entries",
+        "Track storage changes"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Storage enumeration", "Value manipulation"],
+        "integration_tests": ["Storage panel operations"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Component Integration Bridges",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-022",
+      "name": "Elements Inspector",
+      "description": "Elements panel functionality. DOM tree view, computed styles, and box model visualization.",
+      "phase": 1,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "devtools-inspector",
+      "template_name": "DOM and CSS Inspector",
+      "difficulty": "hard",
+      "estimated_loc": "8000-12000",
+      "recommended_libraries": [
+        {
+          "name": "serde_json",
+          "version": "1.0",
+          "required": true,
+          "purpose": "Serialize inspector data for protocol",
+          "registry_url": "https://crates.io/crates/serde_json"
+        },
+        {
+          "name": "tokio-tungstenite",
+          "version": "0.21",
+          "required": true,
+          "purpose": "WebSocket for DevTools protocol",
+          "registry_url": "https://crates.io/crates/tokio-tungstenite"
+        }
+      ],
+      "acceptance_criteria": [
+        "Display DOM tree hierarchy",
+        "Show computed styles for selected element",
+        "Display matched CSS rules with specificity",
+        "Show box model visualization",
+        "Highlight elements on page",
+        "Update view on DOM mutations",
+        "Performance: Serialize DOM tree in < 100ms"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Element info serialization", "Computed style calculation", "Matched rule collection"],
+        "integration_tests": ["Full inspector UI rendering", "Live updates on DOM mutations", "Element highlighting"],
+        "benchmarks": ["DOM tree serialization time", "Style recalculation on change"]
+      },
+      "implementation_hints": [
+        "Implement Chrome DevTools Protocol (CDP)",
+        "Use WebSocket for bidirectional communication",
+        "Cache computed styles for performance",
+        "Implement incremental DOM tree updates"
+      ],
+      "common_pitfalls": [
+        {"issue": "Slow DOM tree serialization", "solution": "Serialize on-demand (lazy load children)"},
+        {"issue": "Styles not updating on CSS changes", "solution": "Invalidate cache on stylesheet mutations"},
+        {"issue": "Highlight flicker on scroll", "solution": "Use absolute positioning, update on scroll"}
+      ],
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Feature Implementations - Elements Inspector",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-023",
+      "name": "Layout Inspector",
+      "description": "Layout inspection including box model, flexbox, and grid overlays.",
+      "phase": 1,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "2000-3000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Display box model (content/padding/border/margin)",
+        "Show flexbox container/item info",
+        "Grid overlay visualization",
+        "Layout debugging overlays"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Box model calculation", "Flexbox info extraction"],
+        "integration_tests": ["Layout panel display"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - inspector/layout.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-024",
+      "name": "Accessibility Inspector",
+      "description": "Accessibility tree inspection and ARIA validation.",
+      "phase": 5,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "3000-5000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Display accessibility tree",
+        "Show ARIA attributes",
+        "Validate ARIA usage",
+        "Screen reader simulation"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Accessibility tree building", "ARIA validation"],
+        "integration_tests": ["Accessibility panel functionality"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - inspector/accessibility.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-025",
+      "name": "Breakpoint Management",
+      "description": "Set, remove, and manage JavaScript breakpoints with conditional support.",
+      "phase": 3,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "devtools-debugger",
+      "template_name": "JavaScript Debugger",
+      "difficulty": "hard",
+      "estimated_loc": "3000-5000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Set breakpoints by line number",
+        "Conditional breakpoints",
+        "Log points",
+        "Breakpoint hit count tracking"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Breakpoint creation", "Condition evaluation"],
+        "integration_tests": ["Breakpoint hit detection"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - debugger/breakpoints.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-026",
+      "name": "Step Execution Controls",
+      "description": "Debugger stepping: step over, step into, step out, continue.",
+      "phase": 3,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "devtools-debugger",
+      "template_name": "JavaScript Debugger",
+      "difficulty": "hard",
+      "estimated_loc": "2000-3000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Step over current line",
+        "Step into function calls",
+        "Step out of current function",
+        "Continue to next breakpoint"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Step state machine"],
+        "integration_tests": ["Full stepping session"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - debugger/stepping.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-027",
+      "name": "Scope Inspection",
+      "description": "Inspect variable scopes when paused: local, closure, global.",
+      "phase": 3,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "devtools-debugger",
+      "template_name": "JavaScript Debugger",
+      "difficulty": "hard",
+      "estimated_loc": "2000-3000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Display local variables",
+        "Show closure scope",
+        "Access global scope",
+        "Variable value preview"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Scope chain building", "Variable extraction"],
+        "integration_tests": ["Scope panel display"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - debugger/scope.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-028",
+      "name": "Source Map Support",
+      "description": "Load and apply source maps for transpiled/bundled JavaScript.",
+      "phase": 3,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "hard",
+      "estimated_loc": "3000-5000",
+      "recommended_libraries": [
+        {
+          "name": "sourcemap",
+          "version": "7.0",
+          "required": true,
+          "purpose": "Source map parsing and resolution",
+          "registry_url": "https://crates.io/crates/sourcemap"
+        }
+      ],
+      "acceptance_criteria": [
+        "Load inline source maps",
+        "Fetch external source map files",
+        "Map generated to original locations",
+        "Show original source in debugger"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Source map parsing", "Location mapping"],
+        "integration_tests": ["Debug with source maps"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - debugger/source_maps.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-029",
+      "name": "Request Interception",
+      "description": "Intercept and modify network requests before they are sent.",
+      "phase": 2,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "hard",
+      "estimated_loc": "3000-5000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Pattern-based request matching",
+        "Modify request headers",
+        "Modify request body",
+        "Block requests"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Pattern matching", "Request modification"],
+        "integration_tests": ["Request interception flow"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - network/interceptor.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-030",
+      "name": "Cache Inspection",
+      "description": "Inspect browser cache contents and manage cached resources.",
+      "phase": 2,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "2000-3000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "List cached resources",
+        "View cache entry details",
+        "Delete cache entries",
+        "Clear entire cache"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Cache enumeration", "Entry manipulation"],
+        "integration_tests": ["Cache panel operations"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - network/cache.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-031",
+      "name": "WebSocket Frame Inspection",
+      "description": "Monitor WebSocket connections and inspect frames.",
+      "phase": 2,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "networking-websocket",
+      "template_name": "WebSocket Protocol Implementation",
+      "difficulty": "medium",
+      "estimated_loc": "2000-3000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "List WebSocket connections",
+        "View sent/received frames",
+        "Binary and text frame display",
+        "Connection timing"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Frame parsing", "Connection tracking"],
+        "integration_tests": ["WebSocket panel display"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - network/websocket.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-032",
+      "name": "CPU Profiler",
+      "description": "Record and analyze CPU usage and call tree.",
+      "phase": 4,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "hard",
+      "estimated_loc": "4000-6000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Start/stop CPU profiling",
+        "Generate call tree",
+        "Calculate self/total time",
+        "Export profile data"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Profile data collection", "Call tree building"],
+        "integration_tests": ["Full profiling session"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - profiler/cpu_profiler.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-033",
+      "name": "Memory Profiler",
+      "description": "Track memory allocation and detect leaks.",
+      "phase": 4,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "hard",
+      "estimated_loc": "4000-6000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Track object allocations",
+        "Identify retained objects",
+        "Compare heap snapshots",
+        "Detect memory leaks"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Allocation tracking", "Leak detection"],
+        "integration_tests": ["Memory panel analysis"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - profiler/memory_profiler.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-034",
+      "name": "Timeline Recording",
+      "description": "Record and visualize browser timeline events.",
+      "phase": 4,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "hard",
+      "estimated_loc": "5000-8000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Record frame timeline",
+        "Show paint/layout events",
+        "JavaScript execution blocks",
+        "Network activity overlay"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Event recording", "Timeline building"],
+        "integration_tests": ["Timeline panel display"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - profiler/timeline.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-035",
+      "name": "Code Coverage",
+      "description": "Track JavaScript and CSS code coverage.",
+      "phase": 4,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "3000-4000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Track executed lines",
+        "Calculate coverage percentage",
+        "Highlight unused code",
+        "Export coverage report"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Coverage tracking", "Percentage calculation"],
+        "integration_tests": ["Coverage panel display"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - profiler/coverage.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-036",
+      "name": "JavaScript REPL",
+      "description": "Interactive JavaScript console with history and autocomplete.",
+      "phase": 2,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "2000-3000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Execute JavaScript expressions",
+        "Command history",
+        "Multi-line input",
+        "Autocomplete suggestions"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Expression evaluation", "History management"],
+        "integration_tests": ["REPL session"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - console/repl.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-037",
+      "name": "Log Management",
+      "description": "Console log collection, filtering, and persistence.",
+      "phase": 2,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "easy",
+      "estimated_loc": "1500-2500",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Capture all console output",
+        "Filter by log level",
+        "Search log contents",
+        "Clear logs"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Log capture", "Filtering"],
+        "integration_tests": ["Console panel display"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - console/logging.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-038",
+      "name": "Object Preview Generation",
+      "description": "Generate preview representations of JavaScript objects.",
+      "phase": 2,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "2000-3000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Generate object previews",
+        "Array preview with length",
+        "Function signature preview",
+        "Expandable object tree"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Preview generation", "Truncation handling"],
+        "integration_tests": ["Object display in console"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Module Structure - utils/object_preview.rs",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-039",
+      "name": "Origin Validation",
+      "description": "WebSocket origin security validation for DevTools connections.",
+      "phase": 1,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "easy",
+      "estimated_loc": "500-1000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Validate Origin header",
+        "Block unauthorized origins",
+        "Support wildcard patterns",
+        "Configurable allowed origins"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Origin validation", "Pattern matching"],
+        "integration_tests": ["Connection authorization"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Security Considerations - WebSocket Security",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-040",
+      "name": "CDP Message Validation",
+      "description": "Validate and sanitize incoming CDP messages for security.",
+      "phase": 1,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "easy",
+      "estimated_loc": "500-1000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Message size limits",
+        "Validate JSON structure",
+        "Block dangerous methods",
+        "Rate limiting"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Size validation", "Structure validation"],
+        "integration_tests": ["Malicious message handling"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Security Considerations - Message Validation",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-041",
+      "name": "Message Batching",
+      "description": "Batch CDP events for improved throughput.",
+      "phase": 4,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "1000-1500",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Batch events by time window",
+        "Batch by count threshold",
+        "Maintain message order",
+        "Reduce round trips"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Batching logic", "Flush triggers"],
+        "integration_tests": ["Throughput benchmarks"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Performance Optimizations - Message Batching",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-042",
+      "name": "Remote Object Caching",
+      "description": "Cache remote object references for performance.",
+      "phase": 4,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "1500-2000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Cache object references",
+        "LRU eviction policy",
+        "TTL for cached objects",
+        "Memory limit enforcement"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Cache operations", "Eviction logic"],
+        "integration_tests": ["Cache hit/miss rates"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Performance Optimizations - Object Caching",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-043",
+      "name": "CDP Compliance Test Suite",
+      "description": "Comprehensive test suite for Chrome DevTools Protocol compliance.",
+      "phase": 5,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "hard",
+      "estimated_loc": "5000-8000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Test all implemented domains",
+        "Compare against Chromium tests",
+        "Achieve 85% compliance rate",
+        "Generate compliance report"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Test infrastructure"],
+        "integration_tests": ["Full protocol compliance"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "Testing Strategy - CDP Compliance Tests",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-044",
+      "name": "BrowserComponent Trait Implementation",
+      "description": "Implement BrowserComponent trait for DevTools integration with browser shell.",
+      "phase": 1,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "medium",
+      "estimated_loc": "1500-2500",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Implement initialize method",
+        "Handle component messages",
+        "Health check reporting",
+        "Component lifecycle management"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Message handling", "Health check"],
+        "integration_tests": ["Component lifecycle"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "API Specifications - Component Message Interface",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "FEAT-045",
+      "name": "DevTools Public API",
+      "description": "Public API for DevTools: start server, connect components, get URLs.",
+      "phase": 1,
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": null,
+      "template_name": "No template match",
+      "difficulty": "easy",
+      "estimated_loc": "500-1000",
+      "recommended_libraries": [],
+      "acceptance_criteria": [
+        "Create DevTools instance",
+        "Start server on configurable port",
+        "Connect to browser components",
+        "Get debugger WebSocket URL"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Instance creation", "URL generation"],
+        "integration_tests": ["Full API usage"]
+      },
+      "source_file": "specifications/devtools-component-specification.md",
+      "source_section": "API Specifications - Public API",
+      "created_at": null,
+      "started_at": null,
+      "completed_at": null
+    }
+  ],
   "completed_order": [],
-  "last_updated": "2025-11-23T23:28:00.681196",
+  "last_updated": "2025-11-23T23:45:00.000000",
   "initialized": true,
   "spec_file": "specifications/devtools-component-specification.md",
   "spec_files": [
     "specifications/devtools-component-specification.md"
   ],
-  "total_features": 0
+  "total_features": 45,
+  "extraction_summary": {
+    "detected_language": "Rust",
+    "confidence": "high",
+    "templates_matched": 8,
+    "features_by_phase": {
+      "phase_1": 14,
+      "phase_2": 11,
+      "phase_3": 6,
+      "phase_4": 8,
+      "phase_5": 6
+    }
+  }
 }
