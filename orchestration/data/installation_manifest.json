@@ -1,0 +1,19 @@
+{
+  "version": "1.1.0",
+  "installer_version": "1.1.0",
+  "installed_at": "2025-11-23T23:26:12+01:00",
+  "upgraded_from": "unknown",
+  "max_parallel_agents": 5,
+  "features_enabled": [
+    "gate_enforcement",
+    "state_tracking",
+    "checkpointing",
+    "resume_capability",
+    "anti_stopping_enforcement",
+    "spec_completeness_verification",
+    "stub_detection",
+    "session_continuation",
+    "progress_preservation",
+    "completion_gate"
+  ]
+}
