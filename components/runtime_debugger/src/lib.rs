@@ -2,11 +2,26 @@
 //!
 //! This module provides implementations for the Runtime and Debugger domains,
 //! enabling JavaScript execution and debugging capabilities.
+//!
+//! ## Features
+//!
+//! - **FEAT-036**: JavaScript REPL - Interactive JavaScript console evaluation
+//! - **FEAT-038**: Object Preview Generation - Generate previews for complex objects
+//! - **FEAT-042**: Remote Object Caching - Cache remote object references with LRU eviction
 
+pub mod cache;
 pub mod debugger;
+pub mod preview;
+pub mod repl;
 pub mod runtime;
 
+pub use cache::{CacheConfig, CacheEntry, CacheStats, RemoteObjectCache};
 pub use debugger::DebuggerDomain;
+pub use preview::{PreviewConfig, PreviewGenerator};
+pub use repl::{
+    CompletionItem, CompletionKind, HistoryEntry, ReplEvaluateOptions, ReplEvaluateResult,
+    ReplSession,
+};
 pub use runtime::RuntimeDomain;
 
 use thiserror::Error;

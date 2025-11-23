@@ -11,6 +11,7 @@ members = [
     "components/browser_page_domains",
     "components/devtools_component",
     "components/devtools_api",
+    "components/inspector_bridges",
 ]
 
 resolver = "2"
@@ -34,7 +35,14 @@ devtools_api = { path = "components/devtools_api" }
 [dev-dependencies]
 tokio = { version = "1.35", features = ["full", "test-util"] }
 tokio-test = "0.4"
+serde_json = "1.0"
+profiler_domains = { path = "components/profiler_domains" }
+protocol_handler = { path = "components/protocol_handler" }
 
 [[test]]
 name = "integration_e2e"
 path = "tests/integration_e2e.rs"
+
+[[test]]
+name = "cdp_compliance_tests"
+path = "tests/cdp_compliance_tests.rs"

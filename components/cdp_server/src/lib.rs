@@ -23,6 +23,7 @@ pub mod error;
 pub mod server;
 pub mod session;
 pub mod transport;
+pub mod validation;
 
 // Re-export main types
 pub use config::ServerConfig;
@@ -31,4 +32,7 @@ pub use server::CdpWebSocketServer;
 pub use session::{Session, SessionId, SessionState};
 pub use transport::{
     parse_cdp_message, serialize_cdp_message, validate_message_size, validate_origin,
+};
+pub use validation::{
+    validate_origin_detailed, OriginValidationResult, OriginValidator, OriginValidatorConfig,
 };

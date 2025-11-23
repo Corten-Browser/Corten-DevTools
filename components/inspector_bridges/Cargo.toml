@@ -1,0 +1,22 @@
+[package]
+name = "inspector_bridges"
+version = "0.1.0"
+edition = "2021"
+description = "DOM, Render, and JavaScript Debug Inspector Bridges for Chrome DevTools Protocol"
+
+[dependencies]
+cdp_types = { path = "../cdp_types" }
+protocol_handler = { path = "../protocol_handler" }
+dom_domain = { path = "../dom_domain" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+async-trait = "0.1"
+tokio = { version = "1.35", features = ["full", "sync"] }
+dashmap = "5.5"
+tracing = "0.1"
+thiserror = "1.0"
+uuid = { version = "1.6", features = ["v4"] }
+parking_lot = "0.12"
+
+[dev-dependencies]
+tokio-test = "0.4"
