@@ -1,18 +1,56 @@
 {
-  "last_extraction": "2025-11-23T23:28:00.682079",
-  "extraction_method": "pending-llm",
+  "last_extraction": "2025-11-23T23:45:00.000000",
+  "extraction_method": "hybrid",
   "spec_files": [
     {
       "path": "specifications/devtools-component-specification.md",
-      "features_extracted": 0,
-      "extraction_method": "none",
-      "last_processed": "2025-11-23T23:28:00.682137"
+      "features_extracted": 45,
+      "extraction_method": "llm",
+      "last_processed": "2025-11-23T23:45:00.000000"
     }
   ],
-  "total_features": 0,
+  "total_features": 45,
   "automated_features": 0,
-  "llm_features": 0,
-  "llm_extraction_complete": false,
-  "llm_extraction_timestamp": null,
-  "automated_extraction_success": false
+  "llm_features": 45,
+  "llm_extraction_complete": true,
+  "llm_extraction_timestamp": "2025-11-23T23:45:00.000000",
+  "automated_extraction_success": false,
+  "language_detection": {
+    "detected_language": "Rust",
+    "confidence": "high",
+    "indicators_found": [
+      "Cargo.toml references",
+      "pub struct declarations",
+      "impl trait blocks",
+      "async fn syntax",
+      "Result<> return types",
+      "Arc<>, HashMap<> types",
+      "tokio, serde crate references"
+    ]
+  },
+  "template_matching": {
+    "templates_matched": 8,
+    "templates_used": [
+      "networking-websocket",
+      "dom-dom-tree",
+      "devtools-inspector",
+      "networking-http-client",
+      "javascript-js-runtime-integration",
+      "devtools-debugger"
+    ],
+    "features_without_template": 37
+  },
+  "extraction_summary": {
+    "phase_1_features": 14,
+    "phase_2_features": 11,
+    "phase_3_features": 6,
+    "phase_4_features": 8,
+    "phase_5_features": 6,
+    "difficulty_breakdown": {
+      "easy": 5,
+      "medium": 22,
+      "hard": 16,
+      "expert": 2
+    }
+  }
 }

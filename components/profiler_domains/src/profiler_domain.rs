@@ -1,17 +1,19 @@
 //! ProfilerDomain implementation
 //!
 //! Handles CPU profiling and code coverage for the Chrome DevTools Protocol.
+//! Provides sample-based profiling with call tree generation.
 
 use async_trait::async_trait;
 use cdp_types::CdpError;
 use parking_lot::RwLock;
 use protocol_handler::DomainHandler;
 use serde_json::{json, Value};
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
-use tracing::{debug, warn};
+use tracing::{debug, info, warn};
 
+use crate::cpu_profiler::CpuProfiler;
 use crate::types::{CoverageRange, FunctionCoverage, Profile, ProfileNode, ScriptCoverage};
 
 /// ProfilerDomain handles CPU profiling and code coverage
@@ -27,6 +29,10 @@ pub struct ProfilerDomain {
     profile_start_time: Arc<RwLock<f64>>,
     /// Whether the domain is enabled
     enabled: Arc<AtomicBool>,
+    /// Sampling interval in microseconds
+    sampling_interval: Arc<AtomicU32>,
+    /// Enhanced CPU profiler
+    cpu_profiler: Arc<CpuProfiler>,
 }
 
 impl ProfilerDomain {
@@ -38,6 +44,8 @@ impl ProfilerDomain {
             coverage_data: Arc::new(RwLock::new(Vec::new())),
             profile_start_time: Arc::new(RwLock::new(0.0)),
             enabled: Arc::new(AtomicBool::new(false)),
+            sampling_interval: Arc::new(AtomicU32::new(100)), // Default 100 microseconds
+            cpu_profiler: Arc::new(CpuProfiler::new()),
         }
     }
 
@@ -49,6 +57,16 @@ impl ProfilerDomain {
     /// Check if coverage is currently active
     pub fn is_coverage_active(&self) -> bool {
         self.coverage_active.load(Ordering::SeqCst)
+    }
+
+    /// Get the CPU profiler instance for advanced operations
+    pub fn cpu_profiler(&self) -> &CpuProfiler {
+        &self.cpu_profiler
+    }
+
+    /// Get the current sampling interval in microseconds
+    pub fn get_sampling_interval(&self) -> u32 {
+        self.sampling_interval.load(Ordering::SeqCst)
     }
 
     /// Get current timestamp in microseconds
@@ -63,6 +81,7 @@ impl ProfilerDomain {
     fn handle_enable(&self) -> Result<Value, CdpError> {
         debug!("Profiler.enable called");
         self.enabled.store(true, Ordering::SeqCst);
+        info!("Profiler domain enabled");
         Ok(json!({}))
     }
 
@@ -72,6 +91,22 @@ impl ProfilerDomain {
         self.enabled.store(false, Ordering::SeqCst);
         self.profiling_active.store(false, Ordering::SeqCst);
         self.coverage_active.store(false, Ordering::SeqCst);
+        info!("Profiler domain disabled");
+        Ok(json!({}))
+    }
+
+    /// Handle the setSamplingInterval method
+    fn handle_set_sampling_interval(&self, params: Option<Value>) -> Result<Value, CdpError> {
+        debug!("Profiler.setSamplingInterval called");
+
+        let interval = params
+            .and_then(|p| p.get("interval").and_then(|v| v.as_u64()))
+            .ok_or_else(|| CdpError::invalid_params("Missing interval parameter"))?;
+
+        self.sampling_interval.store(interval as u32, Ordering::SeqCst);
+        self.cpu_profiler.set_sampling_interval(interval as u32);
+        info!("Profiler sampling interval set to {} microseconds", interval);
+
         Ok(json!({}))
     }
 
@@ -83,8 +118,14 @@ impl ProfilerDomain {
             return Err(CdpError::invalid_request());
         }
 
+        // Start enhanced CPU profiler
+        if let Err(e) = self.cpu_profiler.start() {
+            warn!("Failed to start CPU profiler: {}", e);
+        }
+
         self.profiling_active.store(true, Ordering::SeqCst);
         *self.profile_start_time.write() = Self::get_timestamp_micros();
+        info!("Profiler started");
 
         Ok(json!({}))
     }
@@ -99,13 +140,55 @@ impl ProfilerDomain {
 
         self.profiling_active.store(false, Ordering::SeqCst);
 
-        let start_time = *self.profile_start_time.read();
-        let end_time = Self::get_timestamp_micros();
+        // Try to get profile from enhanced CPU profiler
+        let profile = if let Ok(enhanced_profile) = self.cpu_profiler.stop() {
+            // Convert enhanced profile to basic profile format
+            self.convert_enhanced_profile(&enhanced_profile)
+        } else {
+            // Fallback to mock profile
+            let start_time = *self.profile_start_time.read();
+            let end_time = Self::get_timestamp_micros();
+            self.generate_mock_profile(start_time, end_time)
+        };
 
-        // Generate mock profile data
-        let profile = self.generate_mock_profile(start_time, end_time);
+        info!("Profiler stopped");
 
         Ok(json!({ "profile": profile }))
+    }
+
+    /// Convert enhanced profile to basic Profile format
+    fn convert_enhanced_profile(&self, enhanced: &crate::types::ExportableProfile) -> Profile {
+        let nodes: Vec<ProfileNode> = enhanced
+            .nodes
+            .iter()
+            .map(|n| ProfileNode {
+                id: n.id,
+                call_frame: json!({
+                    "functionName": n.call_frame.function_name,
+                    "scriptId": n.call_frame.script_id,
+                    "url": n.call_frame.url,
+                    "lineNumber": n.call_frame.line_number,
+                    "columnNumber": n.call_frame.column_number
+                }),
+                hit_count: n.hit_count,
+                children: n.children.clone(),
+                deopt_reason: n.deopt_reason.clone(),
+                position_ticks: n.position_ticks.as_ref().map(|ticks| {
+                    ticks
+                        .iter()
+                        .map(|t| json!({"line": t.line, "ticks": t.ticks}))
+                        .collect()
+                }),
+            })
+            .collect();
+
+        Profile {
+            nodes,
+            start_time: enhanced.start_time,
+            end_time: enhanced.end_time,
+            samples: enhanced.samples.clone(),
+            time_deltas: enhanced.time_deltas.clone(),
+        }
     }
 
     /// Handle the startPreciseCoverage method
@@ -262,6 +345,7 @@ impl DomainHandler for ProfilerDomain {
         match method {
             "enable" => self.handle_enable(),
             "disable" => self.handle_disable(),
+            "setSamplingInterval" => self.handle_set_sampling_interval(params),
             "start" => self.handle_start(),
             "stop" => self.handle_stop(),
             "startPreciseCoverage" => self.handle_start_precise_coverage(params),

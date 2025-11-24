@@ -2,6 +2,13 @@
 //!
 //! This module provides the core protocol handling infrastructure for the Chrome DevTools Protocol.
 //! It routes incoming CDP messages to registered domain handlers and manages responses.
+//!
+//! ## Features
+//!
+//! - **FEAT-041**: Message Batching - Batch CDP messages for efficiency
+
+pub mod batching;
+pub mod validation;
 
 use async_trait::async_trait;
 use cdp_types::{CdpError, CdpRequest, CdpResponse};
@@ -9,6 +16,17 @@ use dashmap::DashMap;
 use serde_json::Value;
 use std::sync::Arc;
 use tracing::{debug, error, warn};
+
+// Re-export validation types
+pub use validation::{
+    validate_cdp_request, validate_cdp_request_detailed, validate_method_name,
+    MessageValidator, MessageValidatorConfig, ValidatedRequest, ValidationResult,
+};
+
+// Re-export batching types
+pub use batching::{
+    AsyncMessageBatcher, BatchConfig, BatchStats, BatchedEvent, EventBatch, MessageBatcher,
+};
 
 /// Trait that all domain handlers must implement
 ///
